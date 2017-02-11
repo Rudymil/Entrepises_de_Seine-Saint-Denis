@@ -1,5 +1,4 @@
-CREATE TABLE siren
-(
+CREATE TABLE siren (
   siren character varying(255),
   nic character varying(255),
   l1_normalisee character varying(255),
@@ -100,8 +99,7 @@ CREATE TABLE siren
   vmaj2 character varying(255),
   vmaj3 character varying(255),
   datemaj character varying(255)
-)
-WITH (
+) WITH (
   OIDS=FALSE
 );
 ALTER TABLE siren
