@@ -48,7 +48,7 @@ try:
             
                 adresse = row[1]+" "+row[8]+" "+row[3]+" "+row[9] # "numero voie_maj code_post ville_maj"
                 
-            cur.execute("INSERT INTO bano_93 (adresse,lat,lon) VALUES("+adresse+","+row[6]+","+row[7]+")")
+            cur.execute("INSERT INTO bano_93 (adresse,the_geom) VALUES("+adresse+", ST_GeomFromText('POINT("+row[6]+" "+row[7]+")', 4326))")
 
     finally:
 
