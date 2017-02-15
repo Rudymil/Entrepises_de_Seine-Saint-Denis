@@ -29,6 +29,9 @@ CREATE TABLE "bano_93" (
 
 SELECT AddGeometryColumn('bano_93','the_geom','4326','POINT',2);
 ```
+```
+CREATE EXTENSION postgis
+```
 ### Insertion des données dans la Base de Données
 ```
 import psycopg2
@@ -54,7 +57,7 @@ try:
         exp = "([0-9]+)"
 
         for row in reader:
-            
+
             #print(row)
             ligne = ";".join(row)
             #print(ligne)
@@ -70,7 +73,7 @@ try:
 
                 numero = re.findall(exp,tableau[1]) # extraction du numero
                 adresse = numero[0]+" Q "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero Q voie_maj code_post ville_maj"
-                
+
             elif tableau[1].find("T") != -1: # sinon si c est un TER
 
                 numero = re.findall(exp,tableau[1]) # extraction du numero
@@ -104,7 +107,7 @@ try:
     finally:
 
         f_siren_93.close()
-    
+
     con.commit()
 
 #except (psycopg2.DatabaseError, e):
@@ -121,4 +124,12 @@ finally:
     if con:
 
         con.close()
+```
+### Jonction des 2 tables
+```
+CREATE TABLE siren_93_coord
+AS SELECT siren_93.id, siren_93.siren, siren_93.l1_normalisee, siren_93.adresse, bano_93.the_geom, siren_93.libapet, siren_93.libtefet, siren_93.libnj
+FROM bano_93
+INNER JOIN siren_93
+ON siren_93.adresse = bano_93.adresse
 ```
