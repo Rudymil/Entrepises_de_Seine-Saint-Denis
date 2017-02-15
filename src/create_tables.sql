@@ -1,8 +1,8 @@
 ﻿CREATE TABLE "siren_93" (
 	"id" serial NOT NULL UNIQUE,
-	"siren" varchar(30) NOT NULL UNIQUE,
+	"siren" varchar(30) NOT NULL,
 	"l1_normalisee" varchar(50) NOT NULL,
-	"adresse" varchar(255) NOT NULL UNIQUE,
+	"adresse" varchar(255) NOT NULL,
 	"libapet" varchar(255),
 	"libtefet" varchar(255),
 	"libnj" varchar(255),
@@ -13,7 +13,7 @@
 
 CREATE TABLE "bano_93" (
 	"id" serial NOT NULL UNIQUE,
-	"adresse" varchar(255) NOT NULL UNIQUE,
+	"adresse" varchar(255) NOT NULL,
 	CONSTRAINT bano_93_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

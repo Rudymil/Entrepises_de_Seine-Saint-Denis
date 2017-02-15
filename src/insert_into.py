@@ -14,8 +14,8 @@ con = None
 
 n_bano_93 = "bano_93.csv"
 n_siren_93 = "siren_93.csv"
-f_bano_93 = open(n_bano_93,"rb")
-f_siren_93 = open(n_siren_93,"rb")
+f_bano_93 = open(n_bano_93)
+f_siren_93 = open(n_siren_93)
 
 try:
 
@@ -29,26 +29,32 @@ try:
 
         for row in reader:
             
-            if row[1].find("B") != -1: # si c est un BIS
-            
-                numero = re.findall(exp,row[1]) # extraction du numero
-                adresse = numero[0]+" B "+row[8]+" "+row[3]+" "+row[9] # "numero B voie_maj code_post ville_maj"
+            #print(row)
+            ligne = ";".join(row)
+            #print(ligne)
+            tableau = ligne.split(";")
+            #print(tableau)
+
+            if tableau[1].find("B") != -1: # si c est un BIS
+
+                numero = re.findall(exp,tableau[1]) # extraction du numero
+                adresse = numero[0]+" B "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero B voie_maj code_post ville_maj"
+
+            elif tableau[1].find("Q") != -1 and tableau[1].find("T") != -1: # sinon si c est un QUATER
+
+                numero = re.findall(exp,tableau[1]) # extraction du numero
+                adresse = numero[0]+" Q "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero Q voie_maj code_post ville_maj"
                 
-            elif row[1].find("T") != -1: # sinon si c est un TER
-            
-                numero = re.findall(exp,row[1]) # extraction du numero
-                adresse = numero[0]+" T "+row[8]+" "+row[3]+" "+row[9] # "numero T voie_maj code_post ville_maj"
-                
-            elif row[1].find("Q") != -1: # sinon si c est un QUATER
-                
-                numero = re.findall(exp,row[1]) # extraction du numero
-                adresse = numero[0]+" Q "+row[8]+" "+row[3]+" "+row[9] # "numero Q voie_maj code_post ville_maj"
-                
+            elif tableau[1].find("T") != -1: # sinon si c est un TER
+
+                numero = re.findall(exp,tableau[1]) # extraction du numero
+                adresse = numero[0]+" T "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero T voie_maj code_post ville_maj"
+
             else: # sinon
-            
-                adresse = row[1]+" "+row[8]+" "+row[3]+" "+row[9] # "numero voie_maj code_post ville_maj"
-                
-            cur.execute("INSERT INTO bano_93 (adresse,the_geom) VALUES("+adresse+", ST_GeomFromText('POINT("+row[6]+" "+row[7]+")', 4326))")
+
+                adresse = tableau[1]+" "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero voie_maj code_post ville_maj"
+
+            cur.execute("INSERT INTO bano_93 (adresse,the_geom) VALUES('"+adresse+"', ST_GeomFromText('POINT("+tableau[6]+" "+tableau[7]+")', 4326))")
 
     finally:
 
@@ -59,27 +65,33 @@ try:
         reader = csv.reader(f_siren_93)
 
         for row in reader:
-            
-            adresse = row[5]+" "+row[20]+" "+row[28] # "l4_normalisee codpos libcom"
-            cur.execute("INSERT INTO siren_93 (siren,l1_normalisee,adresse,libapet,libtefet,libnj) VALUES("+row[0]+","+row[2]+","+adresse+","+row[43]+","+row[46]+","+row[71]+")")
+
+            #print(row)
+            ligne = ";".join(row)
+            #print(ligne)
+            tableau = ligne.split(";")
+            #print(tableau)
+
+            adresse = tableau[5]+" "+tableau[20]+" "+tableau[28] # "l4_normalisee codpos libcom"
+            cur.execute("INSERT INTO siren_93 (siren,l1_normalisee,adresse,libapet,libtefet,libnj) VALUES('"+tableau[0]+"','"+tableau[2]+"','"+adresse+"','"+tableau[43]+"','"+tableau[46]+"','"+tableau[71]+"')")
 
     finally:
 
         f_siren_93.close()
-
+    
     con.commit()
 
-except (psycopg2.DatabaseError, e):
+#except (psycopg2.DatabaseError, e):
 
-    if con:
-        
-        con.rollback()
+    #if con:
 
-    print ('Error %s' % e)    
-    sys.exit(1)
-    
+        #con.rollback()
+
+    #print ('Error %s' % e)    
+    #sys.exit(1)
+
 finally:
 
     if con:
-        
+
         con.close()
