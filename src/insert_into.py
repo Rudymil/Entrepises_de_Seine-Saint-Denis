@@ -12,10 +12,8 @@ import sys
 
 con = None
 
-n_bano_93 = "bano_93.csv"
-n_siren_93 = "siren_93.csv"
-f_bano_93 = open(n_bano_93)
-f_siren_93 = open(n_siren_93)
+bano_93 = open("bano_93.csv")
+siren_93 = open("siren_93.csv")
 
 try:
 
@@ -24,7 +22,7 @@ try:
 
     try:
 
-        reader = csv.reader(f_bano_93)
+        reader = csv.reader(bano_93)
         exp = "([0-9]+)"
 
         for row in reader:
@@ -58,11 +56,11 @@ try:
 
     finally:
 
-        f_bano_93.close()
+        bano_93.close()
 
     try:
 
-        reader = csv.reader(f_siren_93)
+        reader = csv.reader(siren_93)
 
         for row in reader:
 
@@ -77,7 +75,7 @@ try:
 
     finally:
 
-        f_siren_93.close()
+        siren_93.close()
     
     con.commit()
 

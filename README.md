@@ -41,10 +41,8 @@ import sys
 
 con = None
 
-n_bano_93 = "bano_93.csv"
-n_siren_93 = "siren_93.csv"
-f_bano_93 = open(n_bano_93)
-f_siren_93 = open(n_siren_93)
+bano_93 = open("bano_93.csv")
+siren_93 = open("siren_93.csv")
 
 try:
 
@@ -53,11 +51,11 @@ try:
 
     try:
 
-        reader = csv.reader(f_bano_93)
+        reader = csv.reader(bano_93)
         exp = "([0-9]+)"
 
         for row in reader:
-
+            
             #print(row)
             ligne = ";".join(row)
             #print(ligne)
@@ -73,7 +71,7 @@ try:
 
                 numero = re.findall(exp,tableau[1]) # extraction du numero
                 adresse = numero[0]+" Q "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero Q voie_maj code_post ville_maj"
-
+                
             elif tableau[1].find("T") != -1: # sinon si c est un TER
 
                 numero = re.findall(exp,tableau[1]) # extraction du numero
@@ -87,11 +85,11 @@ try:
 
     finally:
 
-        f_bano_93.close()
+        bano_93.close()
 
     try:
 
-        reader = csv.reader(f_siren_93)
+        reader = csv.reader(siren_93)
 
         for row in reader:
 
@@ -106,8 +104,8 @@ try:
 
     finally:
 
-        f_siren_93.close()
-
+        siren_93.close()
+    
     con.commit()
 
 #except (psycopg2.DatabaseError, e):
@@ -137,7 +135,7 @@ Query returned successfully: 125857 rows affected, 7.7 secs execution time sans 
 Query returned successfully: 125857 rows affected, 8.9 secs execution time avec des index (btree) sur les adresses
 ```
 ### Résultat visuel
-![MLD](img\output_siren_93_coord_kml.jpg)
+![MLD](img/output_siren_93_coord_kml.jpg)
 KML exporté de GeoServer
 ### Requête de sélection
 ```
