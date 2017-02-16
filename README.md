@@ -83,7 +83,7 @@ try:
 
                 adresse = tableau[1]+" "+tableau[8]+" "+tableau[3]+" "+tableau[9] # "numero voie_maj code_post ville_maj"
 
-            cur.execute("INSERT INTO bano_93 (adresse,the_geom) VALUES('"+adresse+"', ST_GeomFromText('POINT("+tableau[6]+" "+tableau[7]+")', 4326))")
+            cur.execute("INSERT INTO bano_93 (adresse,the_geom) VALUES('"+adresse+"', ST_GeomFromText('POINT("+tableau[7]+" "+tableau[6]+")', 4326))")
 
     finally:
 
@@ -127,9 +127,22 @@ finally:
 ```
 ### Jonction des 2 tables
 ```
-CREATE TABLE siren_93_coord
-AS SELECT siren_93.id, siren_93.siren, siren_93.l1_normalisee, siren_93.adresse, bano_93.the_geom, siren_93.libapet, siren_93.libtefet, siren_93.libnj
+CREATE TABLE siren_93_coord AS
+SELECT siren_93.id, siren_93.siren, siren_93.l1_normalisee, siren_93.adresse, bano_93.the_geom, siren_93.libapet, siren_93.libtefet, siren_93.libnj
 FROM bano_93
 INNER JOIN siren_93
 ON siren_93.adresse = bano_93.adresse
+
+Query returned successfully: 125857 rows affected, 7.7 secs execution time sans index
+Query returned successfully: 125857 rows affected, 8.9 secs execution time avec des index (btree) sur les adresses
+```
+### Résultat visuel
+![MLD](img\output_siren_93_coord_kml.jpg)
+KML exporté de GeoServer
+### Requête de sélection
+```
+SELECT *
+FROM siren_93_coord
+WHERE ST_DistanceSphere(the_geom, ST_GeomFromText('POINT(position)', 4326)) < rayon
+--AND libapet = 'activité'
 ```
