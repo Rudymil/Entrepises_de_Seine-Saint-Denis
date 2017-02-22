@@ -5,7 +5,7 @@
 ### Modèle Logique de Données  
 ![MLD](img/MLD.png)
 ### Création de la Base de Données
-```
+```sql
 CREATE TABLE "siren_93" (
   "id" serial NOT NULL UNIQUE,
   "siren" varchar(30) NOT NULL,
@@ -29,11 +29,11 @@ CREATE TABLE "bano_93" (
 
 SELECT AddGeometryColumn('bano_93','the_geom','4326','POINT',2);
 ```
-```
+```sql
 CREATE EXTENSION postgis
 ```
 ### Insertion des données dans la Base de Données
-```
+```python
 import psycopg2
 import csv
 import re # regular expression
@@ -124,7 +124,7 @@ finally:
         con.close()
 ```
 ### Jonction des 2 tables
-```
+```sql
 CREATE TABLE siren_93_coord AS
 SELECT siren_93.id, siren_93.siren, siren_93.l1_normalisee, siren_93.adresse, bano_93.the_geom, siren_93.libapet, siren_93.libtefet, siren_93.libnj
 FROM bano_93
@@ -138,7 +138,7 @@ Query returned successfully: 125857 rows affected, 8.9 secs execution time avec 
 ![MLD](img/output_siren_93_coord_kml.jpg)
 KML exporté de GeoServer
 ### Requête de sélection
-```
+```sql
 SELECT *
 FROM siren_93_coord
 WHERE ST_DistanceSphere(the_geom, ST_GeomFromText('POINT(position)', 4326)) < rayon
